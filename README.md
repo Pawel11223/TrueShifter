@@ -26,10 +26,6 @@ The two boards communicate via hardware UART. Connect the pins as shown below:
 | **GPIO 17 (TX2)** | → | **GPIO 16 (RX2)** | Haptic data stream (1 to 2) |
 | **GPIO 16 (RX2)** | ← | **GPIO 17 (TX2)** | Battery telemetry data (2 to 1) |
 
-## Hardware Test
-
-Board 2 features a built-in hardware test. To verify the BLE connection with the TrueGear vest without using a PC or VR headset, short **GPIO 22** and **GPIO 23** together. This will trigger a continuous full-body vibration on the vest.
-
 
 ## Acknowledgments
 
