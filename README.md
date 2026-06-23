@@ -8,7 +8,7 @@ This enables native haptic feedback in any VR game supported by bhaptics.
 
 You can flash the pre-compiled firmware directly to your ESP32 boards using a Chromium-based browser (Chrome, Edge). No drivers or IDE installation required.
 
-**[Launch TrueShifter Web Installer](https://twoj-nick.github.io/TrueShifter/)**
+**[Launch TrueShifter Web Installer](https://pawel11223.github.io/TrueShifter/)**
 
 ## Hardware Requirements
 
