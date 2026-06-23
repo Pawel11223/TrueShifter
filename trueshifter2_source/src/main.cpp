@@ -32,12 +32,18 @@ uint8_t lastSentMotorState[40] = {0};
 unsigned long lastSendTime = 0;
 bool hasNewData = false;
 
-const int FRONT_GROUPS[20] = { 1, 1, 4, 4, 1, 1, 4, 4, 1, 1, 4, 4, 1, 1, 4, 4, 1, 1, 4, 4 };
-const int BACK_GROUPS[20] = { 2, 2, 3, 3, 2, 2, 3, 3, 2, 2, 3, 3, 2, 2, 3, 3, 2, 2, 3, 3 };
-const uint16_t MASKS[20] = {
-    0x8000, 0x0400, 0x8000, 0x0400, 0x4000, 0x0200, 0x4000, 0x0200,
-    0x2000, 0x0100, 0x2000, 0x0100, 0x1000, 0x0080, 0x1000, 0x0080,
-    0x0800, 0x0040, 0x0800, 0x0040
+const uint8_t BH_TO_TG_GROUP[40] = {
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+    3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    4, 4, 4, 4, 4, 4, 4, 4, 4, 4
+};
+
+const uint16_t BH_TO_TG_MASK[40] = {
+    0x8000, 0x0400, 0x4000, 0x0200, 0x2000, 0x0100, 0x1000, 0x0080, 0x0800, 0x0040,
+    0x8000, 0x0400, 0x4000, 0x0200, 0x2000, 0x0100, 0x1000, 0x0080, 0x0800, 0x0040,
+    0x8000, 0x0400, 0x4000, 0x0200, 0x2000, 0x0100, 0x1000, 0x0080, 0x0800, 0x0040,
+    0x8000, 0x0400, 0x4000, 0x0200, 0x2000, 0x0100, 0x1000, 0x0080, 0x0800, 0x0040
 };
 
 void translateAndSendToTrueGear() {
@@ -54,22 +60,23 @@ void translateAndSendToTrueGear() {
     uint16_t group1 = 0, group2 = 0, group3 = 0, group4 = 0;
 
     for (int i = 0; i < 40; i++) {
-        int motorValue = currentMotorState[i];
-        if (motorValue > maxIntens) maxIntens = motorValue;
+        if (currentMotorState[i] > maxIntens) maxIntens = currentMotorState[i];
 
-        if (motorValue > 0) {
-            if (i < 20) {
-                if (FRONT_GROUPS[i] == 1) group1 |= MASKS[i];
-                if (FRONT_GROUPS[i] == 4) group4 |= MASKS[i];
-            } else {
-                int idx = i - 20;
-                if (BACK_GROUPS[idx] == 2) group2 |= MASKS[idx];
-                if (BACK_GROUPS[idx] == 3) group3 |= MASKS[idx];
-            }
+        if (currentMotorState[i] > 0) {
+            uint8_t targetGroup = BH_TO_TG_GROUP[i];
+            uint16_t targetMask = BH_TO_TG_MASK[i];
+
+            if (targetGroup == 1) group1 |= targetMask;
+            else if (targetGroup == 2) group2 |= targetMask;
+            else if (targetGroup == 3) group3 |= targetMask;
+            else if (targetGroup == 4) group4 |= targetMask;
         }
     }
-
-    int intensity = (int)((maxIntens / 100.0) * 255.0);
+ //------------------------------------
+    int intensity = (int)((maxIntens / 100.0) * 65.0);  // !!!!!!
+ //------------------------------------
+    if (intensity > 255) intensity = 255;
+    
     frame[9] = (uint8_t)intensity; frame[10] = (uint8_t)intensity;
     frame[11] = (group1 >> 8) & 0xFF; frame[12] = group1 & 0xFF;
     frame[13] = (group2 >> 8) & 0xFF; frame[14] = group2 & 0xFF;
@@ -81,25 +88,43 @@ void translateAndSendToTrueGear() {
 }
 
 void processUART() {
-    if (Serial2.available() >= 45) {
-        if (Serial2.read() == 0xAA) {
-            if (Serial2.read() == 0xBB) {
-                uint8_t tempBuf[40];
-                Serial2.readBytes(tempBuf, 40);
-                uint8_t checksum = Serial2.read();
-                uint8_t footer1 = Serial2.read();
-                uint8_t footer2 = Serial2.read();
+    static int uartState = 0;
+    static int byteCount = 0;
+    static uint8_t tempBuf[40];
+    static uint8_t checksum = 0;
 
-                if (footer1 == 0xCC && footer2 == 0xDD) {
-                    uint8_t calcCheck = 0;
-                    for (int i = 0; i < 40; i++) calcCheck ^= tempBuf[i];
-                    
-                    if (calcCheck == checksum) {
-                        memcpy(currentMotorState, tempBuf, 40);
-                        hasNewData = true;
-                    }
+    while (Serial2.available() > 0) {
+        uint8_t b = Serial2.read();
+
+        if (uartState == 0) {
+            if (b == 0xAA) uartState = 1;
+        } else if (uartState == 1) {
+            if (b == 0xBB) {
+                uartState = 2;
+                byteCount = 0;
+            } else {
+                uartState = 0;
+            }
+        } else if (uartState == 2) {
+            tempBuf[byteCount++] = b;
+            if (byteCount == 40) uartState = 3;
+        } else if (uartState == 3) {
+            checksum = b;
+            uartState = 4;
+        } else if (uartState == 4) {
+            if (b == 0xCC) uartState = 5;
+            else uartState = 0;
+        } else if (uartState == 5) {
+            if (b == 0xDD) {
+                uint8_t calcCheck = 0;
+                for (int i = 0; i < 40; i++) calcCheck ^= tempBuf[i];
+                
+                if (calcCheck == checksum) {
+                    memcpy(currentMotorState, tempBuf, 40);
+                    hasNewData = true;
                 }
             }
+            uartState = 0; 
         }
     }
 }
@@ -115,16 +140,12 @@ void processTestButton() {
         static bool isVibrating = false; 
 
         if (reading == LOW) {
-            if (!isVibrating) {
-                Serial.println("[TEST] Pins 22 & 23 shorted. Sending haptics...");
-                isVibrating = true;
-            }
+            if (!isVibrating) isVibrating = true;
             memset(currentMotorState, 100, 40);
             hasNewData = true;
         } 
         else {
             if (isVibrating) {
-                Serial.println("[TEST] Pins opened. Stopping haptics.");
                 isVibrating = false;
                 memset(currentMotorState, 0, 40);
                 hasNewData = true;
@@ -135,19 +156,13 @@ void processTestButton() {
 }
 
 class ClientCallbacks : public NimBLEClientCallbacks {
-    void onConnect(NimBLEClient* pclient) {
-        Serial.println("[BLE] TrueGear radio link established");
-    }
-
+    void onConnect(NimBLEClient* pclient) {}
     void onDisconnect(NimBLEClient* pclient, int reason) {
-        Serial.print("[BLE] TrueGear disconnected. HCI Reason: 0x");
-        Serial.println(reason, HEX);
         isConnectedToTrueGear = false;
     }
 };
 
-void notifyCallback(NimBLERemoteCharacteristic* pBLERemoteCharacteristic, uint8_t* pData, size_t length, bool isNotify) { 
-}
+void notifyCallback(NimBLERemoteCharacteristic* pBLERemoteCharacteristic, uint8_t* pData, size_t length, bool isNotify) {}
 
 bool connectToTrueGear(NimBLEAddress address) {
     if (pClient == nullptr) {
@@ -155,10 +170,7 @@ bool connectToTrueGear(NimBLEAddress address) {
         pClient->setClientCallbacks(new ClientCallbacks());
     }
 
-    if (!pClient->connect(address)) {
-        Serial.println("[BLE] Connection rejected.");
-        return false;
-    }
+    if (!pClient->connect(address)) return false;
 
     pClient->updateConnParams(12, 24, 0, 500); 
     delay(1000);
@@ -180,7 +192,6 @@ bool connectToTrueGear(NimBLEAddress address) {
         pTxCharacteristic->subscribe(true, notifyCallback);
     }
 
-    Serial.println("[BLE] SUCCESS! Bridge ready.");
     isConnectedToTrueGear = true;
     lastStatusCheckTime = millis();
     return true;
@@ -190,9 +201,6 @@ class ScanCallbacks : public NimBLEAdvertisedDeviceCallbacks {
     void onResult(NimBLEAdvertisedDevice* advertisedDevice) {
         std::string name = advertisedDevice->getName();
         if (name.find("Truegear") != std::string::npos || name.find("truegear") != std::string::npos) {
-            Serial.print("[BLE] Found TrueGear MAC: ");
-            Serial.println(advertisedDevice->getAddress().toString().c_str());
-            
             NimBLEDevice::getScan()->stop();
             isScanning = false;
             
@@ -200,21 +208,17 @@ class ScanCallbacks : public NimBLEAdvertisedDeviceCallbacks {
                 delete trueGearAddress;
             }
             trueGearAddress = new NimBLEAddress(advertisedDevice->getAddress());
-            
             doConnect = true;
         }
     }
 };
 
 void setup() {
-    Serial.begin(115200);
     Serial2.begin(UART_BAUD_RATE, SERIAL_8N1, RX_FROM_BOARD_A, TX_TO_BOARD_A);
 
     pinMode(PIN_TEST_GND, OUTPUT);
     digitalWrite(PIN_TEST_GND, LOW); 
     pinMode(PIN_TEST_BTN, INPUT_PULLUP); 
-
-    Serial.println("\n--- BOARD B (TrueGear Bridge) ---");
 
     NimBLEDevice::init("");
     NimBLEDevice::setMTU(512); 
@@ -224,7 +228,6 @@ void setup() {
     pBLEScan->setAdvertisedDeviceCallbacks(new ScanCallbacks());
     pBLEScan->setActiveScan(true);
     
-    Serial.println("[BLE] Scanning for TrueGear...");
     pBLEScan->start(0, false);
     isScanning = true;
 }
@@ -244,7 +247,6 @@ void loop() {
         unsigned long now = millis();
         
         if (now - lastSendTime >= 35) {
-            
             bool stateChanged = false;
             bool isAllZero = true;
 
@@ -276,10 +278,7 @@ void loop() {
     if (currentMillis - lastStatusCheckTime >= STATUS_INTERVAL) {
         lastStatusCheckTime = currentMillis;
         
-        if (isConnectedToTrueGear) {
-            Serial.println("[STATUS] TrueGear CONNECTED.");
-        } else {
-            Serial.println("[STATUS] TrueGear DISCONNECTED.");
+        if (!isConnectedToTrueGear) {
             if (!isScanning && !doConnect) {
                 isScanning = true;
                 NimBLEDevice::getScan()->start(0, false);
