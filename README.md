@@ -52,8 +52,8 @@ This project is licensed under the [GPL-3.0 License](https://www.gnu.org/license
 
 
 ## Community
-[WeaVR Discord](https://discord.gg/rcnSCGr6tx)   
 
+Join our Discord server for support, discussions, bug reports, and updates: [**WeaVR Discord**](https://discord.gg/rcnSCGr6tx)   
 
 ---
 
