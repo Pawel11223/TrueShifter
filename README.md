@@ -42,7 +42,7 @@ The two boards communicate via hardware UART. Connect the pins as shown below:
 This project relies heavily on the incredible reverse-engineering work done by the **[SenseShift](https://github.com/senseshift/)** project.
 
 ## Disclaimer
-TrueShifter is an independent, community-driven open-source project. It is not affiliated with, endorsed by, certified by, or in any way officially connected with bHaptics Inc., TrueGear, Meta Platforms, Inc., or Pico Interactive.
+TrueShifter is an independent, community-driven open-source project. It is not affiliated with, endorsed by, certified by, or in any way officially connected with bHaptics, TrueGear, Meta, or Pico.
 
 All product names, logos, brands, trademarks, and registered trademarks mentioned in this project are the property of their respective owners. Their use in this repository is strictly for identification and educational purposes (interoperability) and does not imply any association.
 
