@@ -22,10 +22,10 @@ You can flash the pre-compiled firmware directly to your ESP32 boards using a Ch
 
 > **⚠️ Board Compatibility:**  
 > The pre-compiled web installer uses GPIO 16 & 17. Due to hardware differences, the following boards are **NOT supported** out of the box:
-> * **ESP32-WROVER** - *Will crash (Kernel Panic)*. These boards use pins 16/17 for PSRAM.
+> * **ESP32-WROVER** - *Will crash*. These boards use pins 16/17 for PSRAM.
 > * **ESP8266** (NodeMCU, Wemos D1) - Hardware does not support Bluetooth BLE.
 > * **ESP32-S2** - Hardware does not support Bluetooth BLE.
-> * **Mini/Micro boards** (e.g., ESP32-C3 SuperMini) - Lack physical pins 16/17. *(You can still use them if you compile the project from source and reassign the UART pins manually).*
+> * **Mini/Micro boards** (e.g., ESP32-C3 SuperMini/Mini) - Lack physical pins 16/17. *(You can still use them if you compile the project from source and reassign the UART pins manually).*
 
 ## Wiring Diagram
 The two boards communicate via hardware UART. Connect the pins as shown below:
