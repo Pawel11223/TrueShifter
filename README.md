@@ -60,4 +60,4 @@ Join our Discord server for support, discussions, bug reports, and updates: [**W
 
 ### Support
 If you find this project useful, consider grabbing me a coffee. Any support is greatly appreciated and helps keep the project going! 
-<br>[Support via Buy me a Coffee]([https://www.paypal.com/paypalme/weavr1](https://buymeacoffee.com/weavr))
+<br>[Support via Buy me a Coffee](https://buymeacoffee.com/weavr)
