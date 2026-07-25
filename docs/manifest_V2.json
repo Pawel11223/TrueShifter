@@ -1,0 +1,14 @@
+{
+  "name": "TrueShifter V2 SINGLE BOARD BETA",
+  "version": "2.0",
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "parts": [
+        { "path": "V2/bootloader.bin", "offset": 4096 },
+        { "path": "V2/partitions.bin", "offset": 32768 },
+        { "path": "V2/firmware.bin", "offset": 65536 }
+      ]
+    }
+  ]
+}
