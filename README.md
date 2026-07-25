@@ -16,8 +16,7 @@ You can flash the pre-compiled firmware directly to your ESP32 boards using a Ch
 **[Launch TrueShifter Web Installer](https://pawel11223.github.io/TrueShifter/)**
 
 ## Hardware Requirements
-* 2x **ESP32-WROOM-32** development boards
-* Jumper wires
+* **ESP32-WROOM-32/E** development board  (2X for version 1.0)
 * 5V USB Power source
 
 > **⚠️ Board Compatibility:**  
@@ -27,7 +26,7 @@ You can flash the pre-compiled firmware directly to your ESP32 boards using a Ch
 > * **ESP32-S2** - Hardware does not support Bluetooth BLE.
 > * **Mini/Micro boards** (e.g., ESP32-C3 SuperMini/Mini) - Lack physical pins 16/17. *(You can still use them if you compile the project from source and reassign the UART pins manually).*
 
-## Wiring Diagram
+## Wiring Diagram for version 1.0
 The two boards communicate via hardware UART. Connect the pins as shown below:
 
 | Board 1 (Protocol Translator) | Connection | Board 2 (TrueGear Bridge) | Description |
