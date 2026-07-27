@@ -44,7 +44,6 @@ This project relies heavily on the incredible reverse-engineering work done by t
 
 Join our Discord server for support, discussions, bug reports, and updates: [**WeaVR Discord**](https://discord.gg/rcnSCGr6tx)
 
----
 
 ## Support
 
