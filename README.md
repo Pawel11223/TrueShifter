@@ -40,23 +40,27 @@ The two boards communicate via hardware UART. Connect the pins as shown below:
 ## Acknowledgments
 This project relies heavily on the incredible reverse-engineering work done by the **[SenseShift](https://github.com/senseshift/)** project.
 
-## Disclaimer
+## Community
+
+Join our Discord server for support, discussions, bug reports, and updates: [**WeaVR Discord**](https://discord.gg/rcnSCGr6tx)
+
+---
+
+## Support
+
+If you find this project useful, consider grabbing me a coffee. Any support is greatly appreciated and helps keep the project going!
+
+<a href="https://buymeacoffee.com/weavr" target="_blank">
+  <img src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=%E2%98%95&slug=weavr&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" alt="Buy Me a Coffee">
+</a>
+
+### Disclaimer
+
 TrueShifter is an independent, community-driven open-source project. It is not affiliated with, endorsed by, certified by, or in any way officially connected with bHaptics, TrueGear, Meta, or Pico.
 
 All product names, logos, brands, trademarks, and registered trademarks mentioned in this project are the property of their respective owners. Their use in this repository is strictly for identification and educational purposes (interoperability) and does not imply any association.
 
-## License
+### License
+
 This project is licensed under the [GPL-3.0 License](https://www.gnu.org/licenses/gpl-3.0.en.html), in accordance with the licensing terms of the original SenseShift project.
 
-
-
-## Community
-
-Join our Discord server for support, discussions, bug reports, and updates: [**WeaVR Discord**](https://discord.gg/rcnSCGr6tx)   
-
----
-
-
-### Support
-If you find this project useful, consider grabbing me a coffee. Any support is greatly appreciated and helps keep the project going! 
-<br>[Support via Buy me a Coffee](https://buymeacoffee.com/weavr)
