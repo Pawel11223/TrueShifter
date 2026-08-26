@@ -1,0 +1,14 @@
+{
+  "name": "TrueShifter V2 (ESP32-S3)",
+  "version": "2.0.0",
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "parts": [
+        { "path": "firmware/s3/bootloader.bin", "offset": 0 },
+        { "path": "firmware/s3/partitions.bin", "offset": 32768 },
+        { "path": "firmware/s3/firmware.bin", "offset": 65536 }
+      ]
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,43 +15,133 @@
         .container {
             background-color: #1e1e1e; padding: 40px; border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center;
-            max-width: 600px; border: 1px solid #333;
+            max-width: 600px; width: 100%; border: 1px solid #333;
         }
         h1 { color: #ffffff; margin-top: 0; }
         p.subtitle { color: #aaaaaa; margin-bottom: 30px; }
-        .boards-container {
-            display: flex; justify-content: space-between; gap: 20px; margin-top: 20px;
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: #2a2a2a;
+            color: #fff;
+            border: 1px solid #444;
+            font-size: 16px;
+            margin-bottom: 20px;
+            outline: none;
+            cursor: pointer;
         }
+        select:focus {
+            border-color: #03a9f4;
+        }
+
         .board-card {
-            background: #2a2a2a; padding: 20px; border-radius: 8px; flex: 1;
-            border-top: 4px solid #03a9f4; display: flex; flex-direction: column; align-items: center;
+            background: #2a2a2a; padding: 20px; border-radius: 8px;
+            border-top: 4px solid #03a9f4; display: none;
+            flex-direction: column; align-items: center;
+            animation: fadeIn 0.4s ease-in-out;
         }
         .board-card h3 { margin-top: 0; color: #fff; }
-        .board-card p { font-size: 14px; color: #bbb; margin-bottom: 20px; }
+        .board-card .version { color: #03a9f4; font-weight: bold; margin: 5px 0 15px 0; }
+
+        .board-images {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .board-images img {
+            max-width: 200px;
+            height: auto;
+            border-radius: 6px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>TrueShifter Installer</h1>
-        <p class="subtitle">Flash the Bridge firmware directly from your browser.</p>
+        <p class="subtitle">Select your board model to start installation directly from your browser.</p>
 
-        <div class="boards-container">
-            <div class="board-card">
-                <h3 style="color:green">BOARD 1</h3>
-                <esp-web-install-button manifest="manifest1.json"></esp-web-install-button>
-            </div>
+        <select id="boardSelector">
+            <option value="" disabled selected>-- Select your board model --</option>
+            <option value="wroom">ESP32 Classic (WROOM / NodeMCU)</option>
+            <option value="c3">ESP32-C3</option>
+            <option value="s3">ESP32-S3</option>
+        </select>
 
-            <div class="board-card">
-                <h3 style="color:red;">BOARD 2</h3>
-                <esp-web-install-button manifest="manifest2.json"></esp-web-install-button>
-            </div>
+        <div id="dynamicCard" class="board-card">
+            <h3 id="cardTitle">Board Name</h3>
+            <div class="version" id="cardVersion">Firmware: v2.0.0</div>
 
-            <div class="board-card">
-                <h3 style="color:rgb(0, 4, 255);">BETA SINGLE BOARD</h3>
-                <esp-web-install-button manifest="manifest_V2.json"></esp-web-install-button>
-            </div>
+            <div class="board-images" id="cardImages"></div>
+
+            <div id="installerContainer"></div>
         </div>
     </div>
+
+    <script>
+        const boardsData = {
+            wroom: {
+                title: "ESP32 Classic (WROOM)",
+                version: "2.0.0",
+                manifest: "manifest_wroom.json",
+                images: ["assets/wroom.png"]
+            },
+            c3: {
+                title: "ESP32-C3",
+                version: "2.0.0",
+                manifest: "manifest_c3.json",
+                images: ["assets/c3.png"]
+            },
+            s3: {
+                title: "ESP32-S3",
+                version: "2.0.0",
+                manifest: "manifest_s3.json",
+                images: ["assets/s3.png"]
+            }
+        };
+
+        const selector = document.getElementById('boardSelector');
+        const card = document.getElementById('dynamicCard');
+        const cardTitle = document.getElementById('cardTitle');
+        const cardVersion = document.getElementById('cardVersion');
+        const cardImages = document.getElementById('cardImages');
+        const installerContainer = document.getElementById('installerContainer');
+
+        selector.addEventListener('change', function() {
+            const selectedValue = this.value;
+
+            if (boardsData[selectedValue]) {
+                const data = boardsData[selectedValue];
+
+                cardTitle.textContent = data.title;
+                cardVersion.textContent = "Firmware: v" + data.version;
+
+                cardImages.innerHTML = '';
+                data.images.forEach(imgSrc => {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = imgSrc;
+                    imgElement.alt = data.title;
+                    cardImages.appendChild(imgElement);
+                });
+
+                installerContainer.innerHTML = `<esp-web-install-button manifest="${data.manifest}"></esp-web-install-button>`;
+                card.style.display = 'flex';
+            }
+        });
+    </script>
+
     <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
 </body>
 </html>
+
+
+
