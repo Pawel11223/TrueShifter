@@ -23,6 +23,7 @@ You can flash the pre-compiled firmware directly to your ESP32 board using a Chr
 > * **ESP32 Classic** (WROOM / NodeMCU-32S)
 > * **ESP32-C3** (e.g., C3 SuperMini - highly recommended for its compact size)
 > * **ESP32-S3**
+> * **ESP32 WROVER**
 >
 > **❌ Unsupported Boards:**
 > * **ESP8266** (NodeMCU, Wemos D1) 
