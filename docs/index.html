@@ -73,6 +73,7 @@
         <select id="boardSelector">
             <option value="" disabled selected>-- Select your board model --</option>
             <option value="wroom">ESP32 Classic (WROOM / NodeMCU)</option>
+            <option value="wrover">ESP32 WROVER</option>
             <option value="c3">ESP32-C3</option>
             <option value="s3">ESP32-S3</option>
         </select>
@@ -95,6 +96,12 @@
                 manifest: "manifest_wroom.json",
                 images: ["assets/wroom.png"]
             },
+            wrover: {
+                title: "ESP32 WROVER",
+                version: "2.0.0",
+                manifest: "manifest_wrover.json",
+                images: ["assets/wrover.png"]
+            },
             c3: {
                 title: "ESP32-C3",
                 version: "2.0.0",
@@ -107,6 +114,7 @@
                 manifest: "manifest_s3.json",
                 images: ["assets/s3.png"]
             }
+
         };
 
         const selector = document.getElementById('boardSelector');

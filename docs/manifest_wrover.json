@@ -1,0 +1,14 @@
+{
+  "name": "TrueShifter V2 (ESP32 WROVER)",
+  "version": "2.0.0",
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "parts": [
+        { "path": "firmware/wrover/bootloader.bin", "offset": 4096 },
+        { "path": "firmware/wrover/partitions.bin", "offset": 32768 },
+        { "path": "firmware/wrover/firmware.bin", "offset": 65536 }
+      ]
+    }
+  ]
+}
