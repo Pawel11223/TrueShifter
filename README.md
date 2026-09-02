@@ -28,6 +28,8 @@ You can flash the pre-compiled firmware directly to your ESP32 board using a Chr
 > **❌ Unsupported Boards:**
 > * **ESP8266** (NodeMCU, Wemos D1) 
 > * **ESP32-S2** 
+> * **ESP32-P4** 
+> * **ESP32-H Series** 
 
 ## Acknowledgments
 This project relies heavily on the incredible reverse-engineering work done by the **[SenseShift](https://github.com/senseshift/)** project.
