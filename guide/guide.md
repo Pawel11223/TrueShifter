@@ -109,7 +109,7 @@ Power on your **TrueGear** haptic vest.
 
 ##### Support
 
-If TrueShifter helped you or saved you some time, consider buying me a coffee. Any support is greatly appreciated!
+If TrueShifter helped you, consider buying me a coffee. Any support is greatly appreciated!
 
 [Buy Me a Coffee](https://buymeacoffee.com/weavr)
 
