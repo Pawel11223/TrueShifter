@@ -3,7 +3,7 @@
 TrueShifter is an open-source hardware bridge that translates bHaptics BLE protocols into TrueGear protocols in real time. By utilizing a **single microcontroller** acting concurrently as both a BLE Peripheral and BLE Central, it allows TrueGear haptic vests to be recognized natively as a TactSuit X40.
 This enables native haptic feedback without requiring background services, driver installations, or game modifications on your PC or headset.
 
-> **Looking for a step-by-step tutorial? Check out the [Web Installation & Usage Guide](guide/guide.md)!**
+## **Looking for a step-by-step tutorial? Check out the [Web Installation & Usage Guide](guide/guide.md)!**
 
 
 ## Supported Platforms
