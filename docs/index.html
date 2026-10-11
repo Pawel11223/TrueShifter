@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrueShifter - Web Installer</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #1e1e1e;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            border: 1px solid #333;
+        }
+        h1 {
+            color: #ffffff;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        p.subtitle {
+            color: #aaaaaa;
+            margin-bottom: 25px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #aaa;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 15px;
+        }
+        .tab-btn.active {
+            background: #03a9f4;
+            color: #fff;
+            border-color: #03a9f4;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: #2a2a2a;
+            color: #fff;
+            border: 1px solid #444;
+            font-size: 16px;
+            margin-bottom: 15px;
+            outline: none;
+            cursor: pointer;
+        }
+        select:focus {
+            border-color: #03a9f4;
+        }
+
+        .board-card {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            border-top: 4px solid #03a9f4;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .board-card h3 {
+            margin-top: 0;
+            color: #fff;
+        }
+        .board-card .version {
+            color: #03a9f4;
+            font-weight: bold;
+            margin: 5px 0 15px 0;
+        }
+
+        .board-images {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .board-images img {
+            max-width: 200px;
+            height: auto;
+            border-radius: 6px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .config-card {
+            background: #2a2a2a;
+            padding: 25px;
+            border-radius: 8px;
+            border-top: 4px solid #00e676;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .btn-ble {
+            background: #00e676;
+            color: #121212;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .btn-ble:hover {
+            background: #00c853;
+        }
+        .btn-ble:disabled {
+            background: #444;
+            color: #888;
+            cursor: not-allowed;
+        }
+
+        .device-info-bar {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #bbb;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .alert-box {
+            background: #ffd900;
+            border: 1px solid #ff0000;
+            color: #ff0000;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 18px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+            font-weight: bolder;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+        .control-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .slider {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 5px;
+            background: #444;
+            outline: none;
+            transition: 0.2s;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #00e676;
+            cursor: pointer;
+        }
+
+        .switch-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider-round {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #444;
+            transition: .3s;
+            border-radius: 34px;
+        }
+        .slider-round:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        input:checked + .slider-round {
+            background-color: #00e676;
+        }
+        input:checked + .slider-round:before {
+            transform: translateX(24px);
+        }
+
+        .status-msg {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TrueShifter Installer</h1>
+        <p class="subtitle">Install firmware via USB or configure your device wirelessly.</p>
+
+        <div class="tabs">
+            <button class="tab-btn active" id="tabInstall" onclick="switchTab('install')">Installer (USB)</button>
+            <button class="tab-btn" id="tabConfig" onclick="switchTab('config')">Configuration (BLE)</button>
+        </div>
+
+        <div id="sectionInstall">
+            <select id="versionSelector" onchange="onVersionChange()" style="display: none;">
+                <option value="v2">Firmware v2.1</option>
+                <option value="v3">Firmware v3.0 (C3 and S3 only)</option>
+            </select>
+
+            <select id="boardSelector" onchange="onBoardChange()">
+                <option value="" disabled selected>-- Select your board model --</option>
+            </select>
+
+            <div id="dynamicCard" class="board-card">
+                <h3 id="cardTitle">Board Name</h3>
+                <div class="version" id="cardVersion">Firmware: v2.1.0</div>
+                <div class="board-images" id="cardImages"></div>
+                <div id="installerContainer"></div>
+            </div>
+        </div>
+
+        <div id="sectionConfig" style="display: none;">
+            <button class="btn-ble" id="bleConnectBtn" onclick="toggleBleConnection()">Connect via Bluetooth</button>
+            
+            <div id="updateAlert" class="alert-box">
+                Firmware v2.0 detected. Please update to v2.1 via USB to enable settings.
+            </div>
+
+            <div class="config-card" id="configControls" style="display: none;">
+                <div class="device-info-bar">
+                    <span>Hardware: <strong id="infoHw">-</strong></span>
+                    <span>Firmware: <strong id="infoFw">-</strong></span>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-header">
+                        <span>Vest Vibration Intensity <span style="font-size: 12px; color: #888; font-weight: normal;">(Default: 50%)</span></span>
+                        <span id="vestValDisplay">50%</span>
+                    </div>
+                    <input type="range" min="0" max="100" value="50" class="slider" id="vestSlider" oninput="updateVal('vest')">
+                </div>
+
+                <div class="control-group" id="emsGroup">
+                    <div class="control-header">
+                        <span>EMS Intensity</span>
+                        <span id="emsValDisplay">50%</span>
+                    </div>
+                    <input type="range" min="0" max="100" value="50" class="slider" id="emsSlider" oninput="updateVal('ems')">
+                </div>
+
+                <div class="control-group switch-container" id="tactosyGroup">
+                    <span>Emulate TactSleeve</span>
+                    <label class="switch">
+                        <input type="checkbox" id="tactosyToggle" onchange="sendConfig()">
+                        <span class="slider-round"></span>
+                    </label>
+                </div>
+
+                <button class="btn-ble" style="background:#03a9f4; color:#fff;" onclick="sendConfig()">Save to TrueShifter</button>
+                <div class="status-msg" id="statusMsg"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const firmwareData = {
+            v2: {
+                wroom:  { title: "ESP32 Classic (WROOM)", version: "2.1.0", manifest: "manifest_wroom.json",  images: ["assets/wroom.png"] },
+                wrover: { title: "ESP32 WROVER",          version: "2.1.0", manifest: "manifest_wrover.json", images: ["assets/wrover.png"] },
+                c3:     { title: "ESP32-C3",              version: "2.1.0", manifest: "manifest_c3.json",     images: ["assets/c3.png"] },
+                s3:     { title: "ESP32-S3",              version: "2.1.0", manifest: "manifest_s3.json",     images: ["assets/s3.png"] }
+            },
+            v3: {
+                c3:     { title: "ESP32-C3",              version: "3.0.0", manifest: "firmware/V3/manifest_c3.json",  images: ["assets/c3.png"] },
+                s3:     { title: "ESP32-S3",              version: "3.0.0", manifest: "firmware/V3/manifest_s3.json",  images: ["assets/s3.png"] }
+            }
+        };
+
+        const versionSelector = document.getElementById('versionSelector');
+        const boardSelector = document.getElementById('boardSelector');
+        const card = document.getElementById('dynamicCard');
+        const cardTitle = document.getElementById('cardTitle');
+        const cardVersion = document.getElementById('cardVersion');
+        const cardImages = document.getElementById('cardImages');
+        const installerContainer = document.getElementById('installerContainer');
+
+        function populateBoards(version) {
+            boardSelector.innerHTML = '<option value="" disabled selected>-- Select your board model --</option>';
+            const targetGroup = firmwareData[version];
+            for (const key in targetGroup) {
+                const opt = document.createElement('option');
+                opt.value = key;
+                opt.textContent = targetGroup[key].title;
+                boardSelector.appendChild(opt);
+            }
+            card.style.display = 'none';
+        }
+
+        function onVersionChange() {
+            populateBoards(versionSelector.value);
+        }
+
+        function onBoardChange() {
+            const ver = versionSelector.value;
+            const board = boardSelector.value;
+            const data = firmwareData[ver][board];
+
+            if (data) {
+                cardTitle.textContent = data.title;
+                cardVersion.textContent = "Firmware: v" + data.version;
+                cardImages.innerHTML = '';
+                data.images.forEach(imgSrc => {
+                    const img = document.createElement('img');
+                    img.src = imgSrc;
+                    img.alt = data.title;
+                    cardImages.appendChild(img);
+                });
+                installerContainer.innerHTML = `<esp-web-install-button manifest="${data.manifest}"></esp-web-install-button>`;
+                card.style.display = 'flex';
+            }
+        }
+
+        function switchTab(tab) {
+            const secInstall = document.getElementById('sectionInstall');
+            const secConfig = document.getElementById('sectionConfig');
+            const tabInstall = document.getElementById('tabInstall');
+            const tabConfig = document.getElementById('tabConfig');
+
+            if (secInstall) secInstall.style.display = (tab === 'install') ? 'block' : 'none';
+            if (secConfig)  secConfig.style.display  = (tab === 'config')  ? 'block' : 'none';
+            if (tabInstall) tabInstall.className = 'tab-btn ' + (tab === 'install' ? 'active' : '');
+            if (tabConfig)  tabConfig.className  = 'tab-btn ' + (tab === 'config' ? 'active' : '');
+        }
+
+        populateBoards('v2');
+
+        const SERVICE_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
+        const CONFIG_CHAR_UUID = "6e4000fe-b5a3-f393-e0a9-e50e24dcca9e";
+        const DEV_INFO_SERVICE_UUID = "0000180a-0000-1000-8000-00805f9b34fb";
+        const FW_REV_CHAR_UUID = "00002a26-0000-1000-8000-00805f9b34fb";
+        const HW_REV_CHAR_UUID = "00002a27-0000-1000-8000-00805f9b34fb";
+
+        let bleDevice = null;
+        let configCharacteristic = null;
+
+        function updateVal(type) {
+            if (type === 'vest') document.getElementById('vestValDisplay').textContent = document.getElementById('vestSlider').value + "%";
+            if (type === 'ems')  document.getElementById('emsValDisplay').textContent = document.getElementById('emsSlider').value + "%";
+        }
+
+        async function toggleBleConnection() {
+            if (bleDevice && bleDevice.gatt.connected) {
+                bleDevice.gatt.disconnect();
+                return;
+            }
+
+            const status = document.getElementById('statusMsg');
+
+            try {
+                if (!navigator.bluetooth) {
+                    alert("Web Bluetooth is not supported in this browser. Please use Chrome, Edge, or Bluefy on iOS.");
+                    return;
+                }
+
+                status.textContent = "Connecting...";
+                status.style.color = "#aaa";
+
+                bleDevice = await navigator.bluetooth.requestDevice({
+                    filters: [{ namePrefix: "TactSuit" }],
+                    optionalServices: [SERVICE_UUID, 'device_information']
+                });
+
+                bleDevice.addEventListener('gattserverdisconnected', onDisconnected);
+
+                const server = await bleDevice.gatt.connect();
+
+                let detectedFw = "Unknown";
+                let detectedHw = "Unknown";
+
+                try {
+                    const infoService = await server.getPrimaryService('device_information');
+                    const fwChar = await infoService.getCharacteristic('firmware_revision_string');
+                    const hwChar = await infoService.getCharacteristic('hardware_revision_string');
+                    const dec = new TextDecoder();
+                    
+
+                    detectedFw = dec.decode(await fwChar.readValue()).replace(/\0/g, '').trim();
+                    detectedHw = dec.decode(await hwChar.readValue()).replace(/\0/g, '').trim();
+                } catch (e) {
+                    console.log("Device Info read bypass:", e);
+                }
+
+                document.getElementById('infoFw').textContent = detectedFw;
+                document.getElementById('infoHw').textContent = detectedHw;
+
+
+                if (detectedFw === "2.0.0" || detectedFw.startsWith("2.0")) {
+                    document.getElementById('updateAlert').style.display = "block";
+                    document.getElementById('configControls').style.display = "none";
+                    document.getElementById('bleConnectBtn').textContent = "Disconnect";
+                    document.getElementById('bleConnectBtn').style.background = "#f44336";
+                    status.textContent = "";
+                    return;
+                } else {
+                    document.getElementById('updateAlert').style.display = "none";
+                }
+
+                if (detectedFw.startsWith("2.")) {
+                    document.getElementById('emsGroup').style.display = "none";
+                    document.getElementById('tactosyGroup').style.display = "none";
+                } else {
+                    
+                    document.getElementById('emsGroup').style.display = "block";
+                    document.getElementById('tactosyGroup').style.display = "flex";
+                }
+
+                const service = await server.getPrimaryService(SERVICE_UUID);
+                configCharacteristic = await service.getCharacteristic(CONFIG_CHAR_UUID);
+
+                const val = await configCharacteristic.readValue();
+                if (val.byteLength >= 1) {
+                    document.getElementById('vestSlider').value = val.getUint8(0);
+                    updateVal('vest');
+                }
+                if (val.byteLength >= 2) {
+                    document.getElementById('emsSlider').value = val.getUint8(1);
+                    updateVal('ems');
+                }
+                if (val.byteLength >= 3) {
+                    document.getElementById('tactosyToggle').checked = (val.getUint8(2) !== 0);
+                }
+
+                document.getElementById('bleConnectBtn').textContent = "Disconnect";
+                document.getElementById('bleConnectBtn').style.background = "#f44336";
+                document.getElementById('configControls').style.display = "flex";
+                status.textContent = "Connected, settings loaded.";
+                status.style.color = "#00e676";
+
+            } catch (err) {
+                console.error(err);
+                status.textContent = "Error: " + err.message;
+                status.style.color = "#f44336";
+            }
+        }
+
+        function onDisconnected() {
+            document.getElementById('bleConnectBtn').textContent = "Connect via Bluetooth";
+            document.getElementById('bleConnectBtn').style.background = "#00e676";
+            document.getElementById('configControls').style.display = "none";
+            document.getElementById('updateAlert').style.display = "none";
+            document.getElementById('statusMsg').textContent = "Disconnected.";
+            document.getElementById('statusMsg').style.color = "#aaa";
+            configCharacteristic = null;
+        }
+
+async function sendConfig() {
+            if (!configCharacteristic) return;
+
+            const vestVal = parseInt(document.getElementById('vestSlider').value);
+            const emsVal  = parseInt(document.getElementById('emsSlider').value);
+            const tactosy = document.getElementById('tactosyToggle').checked ? 1 : 0;
+            const detectedFw = document.getElementById('infoFw').textContent;
+
+            
+            let payload;
+            if (detectedFw.startsWith("2.")) {
+                payload = new Uint8Array([vestVal]);
+            } else {
+                payload = new Uint8Array([vestVal, emsVal, tactosy]);
+            }
+
+            try {
+                await configCharacteristic.writeValue(payload);
+                document.getElementById('statusMsg').textContent = "Saved to TrueShifter";
+                document.getElementById('statusMsg').style.color = "#00e676";
+                setTimeout(() => { 
+                    if (bleDevice && bleDevice.gatt.connected) document.getElementById('statusMsg').textContent = ""; 
+                }, 2000);
+            } catch (err) {
+                console.error(err);
+                document.getElementById('statusMsg').textContent = "Error saving settings";
+                document.getElementById('statusMsg').style.color = "#f44336";
+            }
+        }
+    </script>
+
+    <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
+</body>
+</html>
