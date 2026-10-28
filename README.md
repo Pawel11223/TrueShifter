@@ -35,14 +35,6 @@ This project relies heavily on the incredible reverse-engineering work done by t
 
 Join our Discord server for support, discussions, bug reports, and updates: [**WeaVR Discord**](https://discord.gg/rcnSCGr6tx)
 
-## Support
-
-If you find this project useful, consider grabbing me a coffee. Any support is greatly appreciated and helps keep the project going!
-
-<a href="https://buymeacoffee.com/weavr" target="_blank">
-  <img src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=%E2%98%95&slug=weavr&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" alt="Buy Me a Coffee">
-</a>
-
 ### Disclaimer
 
 TrueShifter is an independent, community-driven open-source project. It is not affiliated with, endorsed by, certified by, or in any way officially connected with bHaptics, TrueGear, Meta, or Pico.
