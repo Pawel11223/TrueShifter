@@ -158,16 +158,15 @@
         }
 
         .alert-box {
-            background: #ffd900;
-            border: 1px solid #ff0000;
-            color: #ff0000;
+            background: #332b00;
+            border: 1px solid #ffd600;
+            color: #ffd600;
             border-radius: 6px;
             padding: 12px;
-            font-size: 18px;
+            font-size: 14px;
             margin-bottom: 20px;
             text-align: center;
             display: none;
-            font-weight: bolder;
         }
 
         .control-group {
@@ -201,7 +200,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-weight: bold;
         }
+        
         .switch {
             position: relative;
             display: inline-block;
@@ -240,6 +241,21 @@
         }
         input:checked + .slider-round:before {
             transform: translateX(24px);
+        }
+
+        .advanced-panel {
+            background: #222;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .advanced-panel summary {
+            cursor: pointer;
+            font-weight: bold;
+            color: #03a9f4;
+            outline: none;
+            user-select: none;
         }
 
         .status-msg {
@@ -285,6 +301,7 @@
 
         <div id="sectionConfig" style="display: none;">
             <button class="btn-ble" id="bleConnectBtn" onclick="toggleBleConnection()">Connect via Bluetooth</button>
+            <div class="status-msg" id="statusMsg" style="margin-bottom: 15px;"></div>
             
             <div id="updateAlert" class="alert-box">
                 Firmware v2.0 detected. Please update to v2.1 via USB to enable settings.
@@ -304,24 +321,104 @@
                     <input type="range" min="0" max="100" value="50" class="slider" id="vestSlider" oninput="updateVal('vest')">
                 </div>
 
-                <div class="control-group" id="emsGroup">
-                    <div class="control-header">
-                        <span>EMS Intensity</span>
-                        <span id="emsValDisplay">50%</span>
+                <div id="v3Controls" style="display: none;">
+                    <div class="control-group switch-container">
+                        <span>Emulate TactSleeve</span>
+                        <label class="switch">
+                            <input type="checkbox" id="tactosyToggle" onchange="updateEmsVisibility()">
+                            <span class="slider-round"></span>
+                        </label>
                     </div>
-                    <input type="range" min="0" max="100" value="50" class="slider" id="emsSlider" oninput="updateVal('ems')">
-                </div>
 
-                <div class="control-group switch-container" id="tactosyGroup">
-                    <span>Emulate TactSleeve</span>
-                    <label class="switch">
-                        <input type="checkbox" id="tactosyToggle" onchange="sendConfig()">
-                        <span class="slider-round"></span>
-                    </label>
+                    <div id="emsSubControls">
+                        <div class="control-group">
+                            <div class="control-header">
+                                <span>EMS Intensity <span style="font-size: 12px; color: #888; font-weight: normal;">(Default: 50%)</span></span>
+                                <span id="emsValDisplay">50%</span>
+                            </div>
+                            <input type="range" min="0" max="100" value="50" class="slider" id="emsSlider" oninput="updateVal('ems')">
+                        </div>
+
+                        <div class="control-group">
+                            <div class="control-header">
+                                <span>EMS Activation Threshold <span style="font-size: 12px; color: #888; font-weight: normal;">(Default: 25%)</span></span>
+                                <span id="emsThrValDisplay">25%</span>
+                            </div>
+                            <input type="range" min="0" max="100" value="25" class="slider" id="emsThrSlider" oninput="updateVal('emsThr')">
+                        </div>
+
+                        <div class="control-group">
+                            <div class="control-header">
+                                <span>EMS Signal Mode <span style="font-size: 12px; color: #888; font-weight: normal;">(Default: SMART)</span></span>
+                            </div>
+                            <select id="aggModeSelect" style="margin-bottom: 0;" onchange="updateEmsVisibility()">
+                                <option value="2">SMART (Adaptive)</option>
+                                <option value="1">MAX (Peak Motor)</option>
+                                <option value="0">AVG (AVG Motors)</option>
+                            </select>
+                        </div>
+
+                        <details class="advanced-panel" id="advancedPanel">
+                            <summary>Advanced EMS Settings</summary>
+                            <div style="margin-top: 15px;">
+                                <div class="control-group switch-container">
+                                    <span>Vibration Warm-up (Wake) <span style="font-size: 12px; color: #888; font-weight: normal;">(Default: Off)</span></span>
+                                    <label class="switch">
+                                        <input type="checkbox" id="wakeToggle">
+                                        <span class="slider-round"></span>
+                                    </label>
+                                </div>
+
+                                <div class="control-group switch-container">
+                                    <span>Peak Power Modulation <span style="font-size: 12px; color: #888; font-weight: normal;">(Default: On)</span></span>
+                                    <label class="switch">
+                                        <input type="checkbox" id="peakModToggle" checked>
+                                        <span class="slider-round"></span>
+                                    </label>
+                                </div>
+
+                                <div id="manualParamsGroup">
+                                    <div class="control-group">
+                                        <div class="control-header">
+                                            <span>Manual Pulse Type <span style="font-size: 12px; color: #888; font-weight: normal;">(Default: Const)</span></span>
+                                        </div>
+                                        <select id="pulseTypeSelect" style="margin-bottom: 0;">
+                                            <option value="1">Const (Steady Buzz)</option>
+                                            <option value="0">Once (Sharp Hit)</option>
+                                            <option value="2">Fade (Ramp)</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="control-group">
+                                        <div class="control-header">
+                                            <span>Pulse Frequency Interval <span style="font-size: 12px; color: #888; font-weight: normal;">(Default: 1)</span></span>
+                                            <span id="intvValDisplay">1</span>
+                                        </div>
+                                        <input type="range" min="1" max="10" value="1" class="slider" id="intvSlider" oninput="updateVal('intv')">
+                                    </div>
+
+                                    <div class="control-group">
+                                        <div class="control-header">
+                                            <span>Pulse Duration <span style="font-size: 12px; color: #888; font-weight: normal;">(Default: 100 ms)</span></span>
+                                            <span id="durValDisplay">100 ms</span>
+                                        </div>
+                                        <input type="range" min="20" max="500" step="10" value="100" class="slider" id="durSlider" oninput="updateVal('dur')">
+                                    </div>
+                                </div>
+
+                                <div class="control-group">
+                                    <div class="control-header">
+                                        <span>Base Current Scale <span style="font-size: 12px; color: #888; font-weight: normal;">(Default: 500)</span></span>
+                                        <span id="bpowValDisplay">500</span>
+                                    </div>
+                                    <input type="range" min="100" max="1000" step="100" value="500" class="slider" id="bpowSlider" oninput="updateVal('bpow')">
+                                </div>
+                            </div>
+                        </details>
+                    </div>
                 </div>
 
                 <button class="btn-ble" style="background:#03a9f4; color:#fff;" onclick="sendConfig()">Save to TrueShifter</button>
-                <div class="status-msg" id="statusMsg"></div>
             </div>
         </div>
     </div>
@@ -396,7 +493,22 @@
             if (tabConfig)  tabConfig.className  = 'tab-btn ' + (tab === 'config' ? 'active' : '');
         }
 
+        function updateEmsVisibility() {
+            const tactosyEnabled = document.getElementById('tactosyToggle').checked;
+            const emsSubControls = document.getElementById('emsSubControls');
+            if (emsSubControls) {
+                emsSubControls.style.display = tactosyEnabled ? 'block' : 'none';
+            }
+
+            const aggMode = document.getElementById('aggModeSelect').value;
+            const manualGroup = document.getElementById('manualParamsGroup');
+            if (manualGroup) {
+                manualGroup.style.display = (aggMode === "2") ? 'none' : 'block';
+            }
+        }
+
         populateBoards('v2');
+        updateEmsVisibility();
 
         const SERVICE_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
         const CONFIG_CHAR_UUID = "6e4000fe-b5a3-f393-e0a9-e50e24dcca9e";
@@ -410,6 +522,10 @@
         function updateVal(type) {
             if (type === 'vest') document.getElementById('vestValDisplay').textContent = document.getElementById('vestSlider').value + "%";
             if (type === 'ems')  document.getElementById('emsValDisplay').textContent = document.getElementById('emsSlider').value + "%";
+            if (type === 'emsThr') document.getElementById('emsThrValDisplay').textContent = document.getElementById('emsThrSlider').value + "%";
+            if (type === 'intv') document.getElementById('intvValDisplay').textContent = document.getElementById('intvSlider').value;
+            if (type === 'dur')  document.getElementById('durValDisplay').textContent = document.getElementById('durSlider').value + " ms";
+            if (type === 'bpow') document.getElementById('bpowValDisplay').textContent = document.getElementById('bpowSlider').value;
         }
 
         async function toggleBleConnection() {
@@ -446,7 +562,6 @@
                     const fwChar = await infoService.getCharacteristic('firmware_revision_string');
                     const hwChar = await infoService.getCharacteristic('hardware_revision_string');
                     const dec = new TextDecoder();
-                    
 
                     detectedFw = dec.decode(await fwChar.readValue()).replace(/\0/g, '').trim();
                     detectedHw = dec.decode(await hwChar.readValue()).replace(/\0/g, '').trim();
@@ -456,7 +571,6 @@
 
                 document.getElementById('infoFw').textContent = detectedFw;
                 document.getElementById('infoHw').textContent = detectedHw;
-
 
                 if (detectedFw === "2.0.0" || detectedFw.startsWith("2.0")) {
                     document.getElementById('updateAlert').style.display = "block";
@@ -470,12 +584,9 @@
                 }
 
                 if (detectedFw.startsWith("2.")) {
-                    document.getElementById('emsGroup').style.display = "none";
-                    document.getElementById('tactosyGroup').style.display = "none";
+                    document.getElementById('v3Controls').style.display = "none";
                 } else {
-                    
-                    document.getElementById('emsGroup').style.display = "block";
-                    document.getElementById('tactosyGroup').style.display = "flex";
+                    document.getElementById('v3Controls').style.display = "block";
                 }
 
                 const service = await server.getPrimaryService(SERVICE_UUID);
@@ -491,8 +602,38 @@
                     updateVal('ems');
                 }
                 if (val.byteLength >= 3) {
-                    document.getElementById('tactosyToggle').checked = (val.getUint8(2) !== 0);
+                    document.getElementById('emsThrSlider').value = val.getUint8(2);
+                    updateVal('emsThr');
                 }
+                if (val.byteLength >= 4) {
+                    document.getElementById('tactosyToggle').checked = (val.getUint8(3) !== 0);
+                }
+                if (val.byteLength >= 5) {
+                    document.getElementById('aggModeSelect').value = val.getUint8(4);
+                }
+                if (val.byteLength >= 6) {
+                    document.getElementById('pulseTypeSelect').value = val.getUint8(5);
+                }
+                if (val.byteLength >= 7) {
+                    document.getElementById('intvSlider').value = val.getUint8(6);
+                    updateVal('intv');
+                }
+                if (val.byteLength >= 8) {
+                    document.getElementById('durSlider').value = val.getUint8(7) * 10;
+                    updateVal('dur');
+                }
+                if (val.byteLength >= 9) {
+                    document.getElementById('bpowSlider').value = val.getUint8(8) * 100;
+                    updateVal('bpow');
+                }
+                if (val.byteLength >= 10) {
+                    document.getElementById('peakModToggle').checked = (val.getUint8(9) !== 0);
+                }
+                if (val.byteLength >= 11) {
+                    document.getElementById('wakeToggle').checked = (val.getUint8(10) !== 0);
+                }
+
+                updateEmsVisibility();
 
                 document.getElementById('bleConnectBtn').textContent = "Disconnect";
                 document.getElementById('bleConnectBtn').style.background = "#f44336";
@@ -517,28 +658,52 @@
             configCharacteristic = null;
         }
 
-async function sendConfig() {
+        async function sendConfig() {
             if (!configCharacteristic) return;
 
             const vestVal = parseInt(document.getElementById('vestSlider').value);
-            const emsVal  = parseInt(document.getElementById('emsSlider').value);
-            const tactosy = document.getElementById('tactosyToggle').checked ? 1 : 0;
             const detectedFw = document.getElementById('infoFw').textContent;
 
-            
             let payload;
             if (detectedFw.startsWith("2.")) {
                 payload = new Uint8Array([vestVal]);
             } else {
-                payload = new Uint8Array([vestVal, emsVal, tactosy]);
+                const emsVal = parseInt(document.getElementById('emsSlider').value);
+                const emsThr = parseInt(document.getElementById('emsThrSlider').value);
+                const tactosy = document.getElementById('tactosyToggle').checked ? 1 : 0;
+                const aggMode = parseInt(document.getElementById('aggModeSelect').value);
+                const pulseType = parseInt(document.getElementById('pulseTypeSelect').value);
+                const intv = parseInt(document.getElementById('intvSlider').value);
+                const dur = Math.round(parseInt(document.getElementById('durSlider').value) / 10);
+                const bpow = Math.round(parseInt(document.getElementById('bpowSlider').value) / 100);
+                const pmod = document.getElementById('peakModToggle').checked ? 1 : 0;
+                const wake = document.getElementById('wakeToggle').checked ? 1 : 0;
+
+                payload = new Uint8Array([
+                    vestVal,
+                    emsVal,
+                    emsThr,
+                    tactosy,
+                    aggMode,
+                    pulseType,
+                    intv,
+                    dur,
+                    bpow,
+                    pmod,
+                    wake
+                ]);
             }
 
             try {
-                await configCharacteristic.writeValue(payload);
+                if (configCharacteristic.writeValueWithoutResponse) {
+                    await configCharacteristic.writeValueWithoutResponse(payload);
+                } else {
+                    await configCharacteristic.writeValue(payload);
+                }
                 document.getElementById('statusMsg').textContent = "Saved to TrueShifter";
                 document.getElementById('statusMsg').style.color = "#00e676";
-                setTimeout(() => { 
-                    if (bleDevice && bleDevice.gatt.connected) document.getElementById('statusMsg').textContent = ""; 
+                setTimeout(() => {
+                    if (bleDevice && bleDevice.gatt.connected) document.getElementById('statusMsg').textContent = "";
                 }, 2000);
             } catch (err) {
                 console.error(err);
