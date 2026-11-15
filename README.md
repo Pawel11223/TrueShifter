@@ -22,11 +22,11 @@ You can flash the pre-compiled firmware directly to your ESP32/nRF52 board using
 * **1x ESP32 Microcontroller** (See compatibility below)
 * A standard USB cable & 5V power source (e.g., a PC USB port, phone charger, etc.)
 
-| Support:     | Boards:                                  | Work with:              |
-| ------------ | ---------------------------------------- | ----------------------- |
-| V2.1 ✅       | ESP32 Classic ESP32 C3 ESP32 S3 nRF52840 | android quest/pico PCVR |
-| V3  ✅        | nRF52840                                 | PCVR                    |
-| unsupported❌ | ESP8266 ESP32 S2                         |                         |
+|             | Info:                           | List of supported boards:                | Work with:              |
+|-------------|---------------------------------|------------------------------------------|-------------------------|
+| V2.1        | Vest emulation                  | ESP32 Classic ESP32 C3 ESP32 S3 nRF52840 | android quest/pico PCVR |
+| V3          | Vest + EMS arm bands emulation  | nRF52840                                 | PCVR                    |
+| unsupported |                                 | ESP8266 ESP32 S2                         |                         |
 
 ## Acknowledgments
 
