@@ -19,7 +19,7 @@ You can flash the pre-compiled firmware directly to your ESP32/nRF52 board using
 
 ## Hardware Requirements
 
-* **1x ESP32 Microcontroller** (See compatibility below)
+* **1x ESP32/nRF52 Microcontroller** (See compatibility below)
 * A standard USB cable & 5V power source (e.g., a PC USB port, phone charger, etc.)
 
 |             | Info:                           | List of supported boards:                | Work with:              |
