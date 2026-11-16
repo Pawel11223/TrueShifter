@@ -1,5 +1,5 @@
 [![Discord](https://img.shields.io/discord/1495376023070441482?style=for-the-badge&logo=discord)](https://discord.gg/rcnSCGr6tx) &nbsp;&nbsp;&nbsp;&nbsp;
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-support%20more%20projects-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/weavr)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-support%20for%20more%20projects-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/weavr)
 
 
 
