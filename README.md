@@ -1,3 +1,8 @@
+[![Discord](https://img.shields.io/discord/1495376023070441482?style=for-the-badge&logo=discord)](https://discord.gg/rcnSCGr6tx) &nbsp;&nbsp;&nbsp;&nbsp;
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-support%20more%20projects-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/weavr)
+
+
+
 # TrueShifter V3
 
 TrueShifter is an open-source hardware bridge that translates bHaptics BLE protocols into TrueGear protocols in real time. By utilizing a **single microcontroller** acting concurrently as both a BLE Peripheral and BLE Central, it allows TrueGear haptic vests to be recognized natively as a TactSuit X40.
@@ -31,10 +36,6 @@ You can flash the pre-compiled firmware directly to your ESP32/nRF52 board using
 ## Acknowledgments
 
 This project relies heavily on the incredible reverse-engineering work done by the **[SenseShift](https://github.com/senseshift/)** project.
-
-## Community
-
-Join our Discord server for support, discussions, bug reports, and updates: [**WeaVR Discord**](https://discord.gg/rcnSCGr6tx)
 
 ### Disclaimer
 
